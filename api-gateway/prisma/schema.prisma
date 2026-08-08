@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model planting_bed {
+  stage_id           String?
+  stage              crop_stages?         @relation(fields: [stage_id], references: [id])
+  id                 String               @id @default(uuid())
+  sensors            sensor[]
+  field_capacity     Float                @default(0)
+  wilting_point      Float                @default(0)
+  volume             Float                @default(0)
+  area               Float                @default(0)
+  plant_id           String?
+  plant              crops?               @relation(fields: [plant_id], references: [id])
+  reads              reads[]
+  irrigations        irrigation[]
+  flow_rate          Float                @default(0)
+  evapotranspiration evapotranspiration[]
+}
+
+model sensor {
+  id                String       @id @default(uuid())
+  bed_id            String
+  order             Int
+  bed               planting_bed @relation(fields: [bed_id], references: [id])
+  type              String       @default("soil_moisture")
+  reads             reads[]
+  dry_reference_adc Int          @default(4095)
+  wet_reference_adc Int          @default(0)
+  enabled           Boolean      @default(true)
+}
+
+model reads {
+  id        String       @id @default(uuid())
+  date      DateTime     @default(now())
+  sensor_id String
+  bed_id    String
+  bed       planting_bed @relation(fields: [bed_id], references: [id])
+  value     Float
+  raw_value Int
+  sensor    sensor       @relation(fields: [sensor_id], references: [id])
+  rainfall  Boolean      @default(false)
+  is_valid  Boolean      @default(true)
+
+  @@index([bed_id, date])
+}
+
+model crop_stages {
+  id            String         @id @default(uuid())
+  name          String
+  duration      Int
+  kc            Float
+  crop_id       String
+  planting_beds planting_bed[]
+  crop          crops          @relation(fields: [crop_id], references: [id])
+  pause_periods Int?           @default(0)
+  irrigations   irrigation[]
+}
+
+model crops {
+  id                 String         @id @default(uuid())
+  name               String
+  stages             crop_stages[]
+  depletion_fraction Float          @default(0)
+  plantingBeds       planting_bed[]
+}
+
+model air_data {
+  id              String   @id @default(uuid())
+  date            DateTime @default(now())
+  air_temperature Float
+  air_humidity    Int
+}
+
+model irrigation {
+  id                 String       @id @default(uuid())
+  date               DateTime     @default(now())
+  bed_id             String
+  water_before       Float
+  water_after        Float?
+  target_water_level Float?
+  water_added        Float
+  duration           Int
+  bed                planting_bed @relation(fields: [bed_id], references: [id])
+  expected_etc       Float        @default(0)
+  real_etc           Float?
+  flow_rate          Float        @default(0)
+  stage              crop_stages? @relation(fields: [stage_id], references: [id])
+  stage_id           String?
+  pause              Boolean      @default(false)
+  action_idx         Int          @default(3)
+  learn              Boolean      @default(false)
+}
+
+model evapotranspiration {
+  id           String       @id @default(uuid())
+  date         DateTime
+  bed_id       String
+  expected_etc Float
+  real_etc     Float?
+  is_valid     Boolean      @default(true)
+  bed          planting_bed @relation(fields: [bed_id], references: [id])
+
+  @@index([bed_id, date])
+}

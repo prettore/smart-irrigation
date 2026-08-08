@@ -1,0 +1,8 @@
+
+   7.1   : AquaCrop Version (August 2023)
+   1     : Sprinkler irrigation
+ 100     : Percentage of soil surface wetted by irrigation
+   1     : Irrigation schedule
+   -9    : Day 1 is first day of growing period
+   Day    Depth (mm)   ECw (dS/m)
+====================================  

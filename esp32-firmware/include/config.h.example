@@ -1,0 +1,14 @@
+// Renomeie este arquivo para config.h e preencha com suas credenciais.
+// O arquivo config.h está no .gitignore e NÃO deve ser enviado ao repositório.
+
+#ifndef CONFIG_H
+#define CONFIG_H
+
+// Credenciais da rede Wi-Fi
+#define WIFI_SSID "Sua_Rede_WiFi"
+#define WIFI_PASS "Sua_Senha_WiFi"
+
+// URL do API Gateway (ex: http://192.168.1.100:3000/api/decide)
+#define SERVER_URL "http://IP_DO_SERVIDOR:3000/api/decide"
+
+#endif

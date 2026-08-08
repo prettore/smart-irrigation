@@ -1,0 +1,26 @@
+{
+  "name": "apigardensensor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "setup": "npm install && npx prisma generate && npx prisma migrate deploy"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "dayjs": "^1.11.19",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "moment-timezone": "^0.6.0",
+    "prisma": "^6.16.2",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
